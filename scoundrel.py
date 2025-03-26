@@ -11,7 +11,7 @@ def card_name(card):
         name += "Jack"
     elif card % 13 == 12:
         name += "Queen"
-    elif card % 13 == 13:
+    elif card % 13 == 0:
         name += "King"
     name += " of "
     if card < 14:
@@ -44,14 +44,39 @@ def weapon_status():
         return("You have a used level " + str(weapon) + " weapon that can fight an enemy up to level " + str(weapon_degradation) + ".")
 
 def interact_object(chosen_card):
-    pass
-    # TODO if heart, health potion:
-        # if not used potion in room, gain health up to 20
-        # if has used health or at full, confirm discard
-    # TODO if diamond, gain weapon
-    # TODO if club/spade, fight
-        # if weapon and not degraded, offer weapon choice
+    global health, has_drank_potion, weapon, weapon_degradation
+    if chosen_card < 14: # if heart, health potion:
+        if has_drank_potion: 
+            print("You've already used a potion in this chamber!  Sure you want to discard the " + str(chosen_card) + " of Hearts?")
+            response = input()
+            if str.lower(response) in ('yes', 'y'):
+                print("You have no choice but to pour out this potion.")
+                return True
+            else:
+                print("You change your mind.")
+                return False
+        else: 
+            print ("You drink the level " + str(chosen_card) + " health potion.")
+            health_gained = min(chosen_card, 20 - health)
+            health += health_gained
+            if health == 20:
+                print("You're back to a maximum 20 health!")
+            else:
+                print("You regain " + str(health_gained) + " life points!")
+            has_drank_potion = True
+            return True
+    elif chosen_card < 27: # TODO if diamond, gain weapon
+        if weapon > 0:
+            print("You discard your level " + str(weapon) + " weapon and equip the " + str(chosen_card - 13) + "of Diamonds.")
+        else:
+            print("You arm yourself with a " + str(chosen_card - 13) + " of Diamonds and ready yourself to fight!")
+        weapon = chosen_card - 13
+        weapon_degradation = 0
+        return True
+    else: # TODO if club/spade, fight
+        return True # if weapon and not degraded, offer weapon choice
         # game over if health hits under 1
+    return True
 
 def flee_room():
     print("You exit this room before anything or anyone hears you.")
@@ -62,17 +87,21 @@ def flee_room():
     while len(room) < 4:
         room.append(dungeon[0])
         dungeon.pop(0)
+    has_fled = True
+    has_drank_potion = False
 
 def next_room():
     print("You enter the next room, bringing " + cardname(room[0]) + "with you.")
     while(len(dungeon) > 0 and len(room) < 4):
         room.append(dungeon[0])
         dungeon.pop(0)
+    has_fled = False
+    has_drank_potion = False
 
 # introduce global variables and initialize variables for new game
 dungeon = []
 for i in range(1, 53):
-   dungeon.append(i) #ace-through-king of hearts, diamonds, spades, clubs
+   dungeon.append(i) # ace-through-king of hearts, diamonds, spades, clubs
 for i in [1,11,12,13,14,24,25,26]:
     dungeon.remove(i) # remove the ace and face cards from hearts and diamonds
 random.shuffle(dungeon)
