@@ -49,7 +49,7 @@ def interact_object(chosen_card):
         if has_drank_potion: 
             print("You've already used a potion in this chamber!  Sure you want to discard the " + str(chosen_card) + " of Hearts?")
             response = input()
-            if str.lower(response) in ('yes', 'y'):
+            if str.lower(response) in ['yes', 'y']:
                 print("You have no choice but to pour out this potion.")
                 return True
             else:
@@ -74,8 +74,39 @@ def interact_object(chosen_card):
         weapon_degradation = 0
         return True
     else: # TODO if club/spade, fight
-        return True # if weapon and not degraded, offer weapon choice
-        # game over if health hits under 1
+        monster_level = chosen_card % 13
+        if monster_level < 2:
+            monster_level += 13
+        if weapon == 0:
+            print("You bravely battle the foe unarmed, suffering " + str(monster_level) + " damage!")
+            health -= monster_level
+            return True
+        elif weapon_degradation > 0 and weapon_degradation <= monster_level:
+            print("Your weapon is too damaged to harm this foe!  Do you want to fight it barehanded?")
+            response = input()
+            if str.lower(response) in ['yes', 'y']:
+                print("With a battle cry, you use not your sword but your fists to ambush the foe, taking " + str(monster_level) + " damage!")
+                health -= monster_level
+                return True
+            else:
+                print("You reconsider the matchup.")
+                return False
+        else:
+            print("Would you like to use your level " + str(weapon) + " on the enemy?")
+            response = input()
+            if response in ['yes', 'y']:
+                #TODO battle enemy
+                #TODO damage weapon
+                return True
+            else:
+                print("In that case, would you like to battle this level " + str(monster_level) + " monster unarmed?")
+                if response in ['yes,' 'y']:
+                    print ("Spirits blazing, you challenge the foe to a fierce fist-to-fist faceoff!  You take " + monster_level + " damage.")
+                    health -= monster_level
+                    return True
+                else:
+                    print ("You back up to regroup, pondering your strategy.")
+                    return False
     return True
 
 def flee_room():
