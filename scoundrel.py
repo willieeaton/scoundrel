@@ -26,7 +26,7 @@ def card_name(card):
 
 def room_description():
     # give list of items in room
-    print("In this room, are the following objects:")
+    print("\nIn this room, are the following objects:")
     i = 1
     for j in room:
         print(str(i) + ") " + card_name(j))
@@ -65,7 +65,7 @@ def interact_object(chosen_card):
                 print("You regain " + str(health_gained) + " life points!")
             has_drank_potion = True
             return True
-    elif chosen_card < 27: # TODO if diamond, gain weapon
+    elif chosen_card < 27: # if diamond, gain weapon
         if weapon > 0:
             print("You discard your level " + str(weapon) + " weapon and equip the " + str(chosen_card - 13) + "of Diamonds.")
         else:
@@ -73,7 +73,7 @@ def interact_object(chosen_card):
         weapon = chosen_card - 13
         weapon_degradation = 0
         return True
-    else: # TODO if club/spade, fight
+    else: # if club/spade, fight
         monster_level = chosen_card % 13
         if monster_level < 2:
             monster_level += 13
@@ -81,7 +81,7 @@ def interact_object(chosen_card):
             print("You bravely battle the foe unarmed, suffering " + str(monster_level) + " damage!")
             health -= monster_level
             return True
-        elif weapon_degradation > 0 and weapon_degradation <= monster_level:
+        elif weapon_degradation > 0 and weapon_degradation < monster_level:
             print("Your weapon is too damaged to harm this foe!  Do you want to fight it barehanded?")
             response = input()
             if str.lower(response) in ['yes', 'y']:
@@ -95,8 +95,21 @@ def interact_object(chosen_card):
             print("Would you like to use your level " + str(weapon) + " weapon on the enemy?")
             response = input()
             if response in ['yes', 'y']:
-                #TODO battle enemy
-                #TODO damage weapon
+                #battle enemy
+                if weapon >= monster_level:
+                    print("You slice the monster down with ease!")
+                else:
+                    damage = monster_level - weapon
+                    print("You defeat the enemy in a grueling fight, taking " + str(damage) + " damage.")
+                    health -= damage
+                #damage weapon
+                weapon_degradation = monster_level - 1
+                if weapon_degradation < 2:
+                    print("Your weapon shatters upon defeating the foe!  You are now unarmed.")
+                    weapon = 0
+                    weapon_degradation = 0
+                else:
+                    print("Your weapon, battered by the stress of combat, can now be used on monsters up to level " + str(weapon_degradation) + ".")
                 return True
             else:
                 print("In that case, would you like to battle this level " + str(monster_level) + " monster unarmed?")
