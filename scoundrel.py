@@ -92,7 +92,7 @@ def interact_object(chosen_card):
                 print("You reconsider the matchup.")
                 return False
         else:
-            print("Would you like to use your level " + str(weapon) + " on the enemy?")
+            print("Would you like to use your level " + str(weapon) + " weapon on the enemy?")
             response = input()
             if response in ['yes', 'y']:
                 #TODO battle enemy
@@ -110,6 +110,7 @@ def interact_object(chosen_card):
     return True
 
 def flee_room():
+    global has_fled, has_drank_potion
     print("You exit this room before anything or anyone hears you.")
     random.shuffle(room)
     while len(room) > 0:
@@ -122,12 +123,17 @@ def flee_room():
     has_drank_potion = False
 
 def next_room():
-    print("You enter the next room, bringing " + cardname(room[0]) + "with you.")
+    global has_fled, has_drank_potion
+    print("You enter the next room, bringing " + card_name(room[0]) + " with you.")
     while(len(dungeon) > 0 and len(room) < 4):
         room.append(dungeon[0])
         dungeon.pop(0)
     has_fled = False
     has_drank_potion = False
+
+def game_over():
+    print("What a shame, you have been brought to " + str(health) + " health and can not continue your quest.")
+    #TODO define score
 
 # introduce global variables and initialize variables for new game
 dungeon = []
@@ -148,37 +154,40 @@ for i in range(0, 4):
 
 # TODO help/credits/play menu
 
-room_description() # display room info
-print("Would you like to engage with an object (1-4) or L)eave the room?")
-
-while True:
-    response = input()
-    try:
-        response = int(response)
-    except:
-        if str.lower(response) == 'l':
-            if (has_fled):
-                print("You cannot flee, you fled the previous room!")
-                continue
+while True: #room loop
+    while True: #individual card loop
+        room_description()
+        print("Would you like to engage with an object (1-4) or L)eave the room?")
+        response = input()
+        try:
+            response = int(response)
+        except:
+            if str.lower(response) == 'l':
+                if (has_fled):
+                    print("You cannot flee, you fled the previous room!")
+                    continue
+                else:
+                    flee_room()
+                    break
             else:
-                flee_room()
+                print("Please enter a number or \"L\".")
+                continue
+        if (response < 1 or response > len(room)):
+            print("Please enter a valid object still in the room.")
+            continue
+        else:
+            if interact_object(room[response - 1]):
+                room.pop(response-1)
                 break
-        else:
-            print("Please enter a number or \"L\".")
-            continue
-    if (response < 1 or response > len(room)):
-        print("Please enter a valid object still in the room.")
-        continue
-    else:
-        if interact_object(room[response - 1]):
-            break
-        else:
-            continue
-
-# if 1 object left in room, 'new room' (pop on up to 3 more cards)
-# loop until health <= 0 or dungeon and room are empty
-# assign player score
-
+            else:
+                continue
+    if health <= 0:
+        game_over()
+        break
+    if len(room) < 2 and len(dungeon) > 0:
+        next_room() # try to generate a new room
+    if len(room) == 0 and len(dungeon) == 0:
+        break #TODO win game
 
 
 
