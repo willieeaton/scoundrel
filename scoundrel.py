@@ -148,6 +148,59 @@ def game_over():
     print("What a shame, you have been brought to " + str(health) + " health and can not continue your quest.")
     #TODO define score
 
+def rules_and_credits():
+    print('''In Scoundrel, your goal is to survive through a deck of cards (the dungeon)
+full of monsters (clubs and spades), health potions (hearts), and equippable weapons
+(diamonds.)  The game uses a 52-card deck, minus the red Ace and red face cards.
+
+Each room consists of 4 cards.  As you enter a room, you may choose to flee - if you
+leave the room, the four cards will be shuffled together and put back at the bottom
+of the dungeon.  You may not flee two rooms in a row.
+
+If you choose to brave a room, you must select the cards to interact with.  A diamond
+is a WEAPON, and the higher the number the stronger.  As you use a weapon, it grows
+damaged, and can only be used on monsters of a lower level than the last one you fought
+with it.  When you pick up a new weapon, it has no damage, but you must discard the
+previous weapon, even if the new weapon is less powerful.
+
+A heart is a HEALTH POTION.  You may use one health potion per room, gaining the number
+of health equal to its number, to a MAXIMUM of 20 health.  If you try to use a second
+health potion in the same room, it will POUR OUT the potion, discarding it entirely.
+(press enter for the rest of the instructions)''')
+    input()
+    print('''A club or spade is a MONSTER.  A monster has level equal to its number - a Jack is level
+11, a Queen 12, a King 13, and an Ace a mighty 14.  If you fight a monster barehanded,
+you will defeat it, taking damage equal to its level.  If you choose to fight a monster
+with your weapon, you will take no damage if the weapon is at least as high leveled as
+the monster.  If the monster is higher than the weapon, you will take the difference
+in levels of damage.  Even if you have a weapon, you MAY CHOOSE to fight barehanded.
+
+Once three cards have been cleared, you enter a new room.  The remaining card comes with
+you, along with the top three cards drawn from the Dungeon.
+
+Run out of health or clear the dungeon to finish the game!  If you fail to reach the end
+with health left, your score will be the total amount of levels of monsters left in the
+room and dungeon.  If you succeed, your score will be your health.  Plus, if you finish
+the last monster, and leave one health potion in the room, you add that potion to your
+score.
+
+This game was created August 15, 2011 by Zach Gage and Kurt Bieg, and posted to the
+website stfj.net.  This adaptation was made by P. Willie Eaton on March 2025.  No
+claim to ownership of this game is made by Willie - although the rules are published
+freely online, I was unable to determine the license of this game, so presumably
+all rights are reserved to Gage and Bieg.
+(press enter to begin the game)''')
+    input()
+
+# introduce game
+print("Welcome to Scoundrel!  Would you like to see the rules and credits?")
+response = input()
+if str.lower(response) in ['yes', 'y']:
+    rules_and_credits()
+print('''\nYou step into the dungeon, in search of treasure and fame.  Armed only with
+your wits, you prepare to brave the darkness and make your mark, doing whatever
+it takes, the mark of a true Scoundrel!''')
+
 # introduce global variables and initialize variables for new game
 dungeon = []
 for i in range(1, 53):
