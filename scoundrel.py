@@ -31,7 +31,17 @@ def room_description():
     for j in room:
         print(str(i) + ") " + card_name(j))
         i += 1
-    #TODO print current health and weapon
+    #print current health and weapon
+    print("Your current health is " + str(health) + " out of a maximum 20.")
+    print(weapon_status())
+
+def weapon_status():
+    if weapon == 0:
+        return("You are currently bare-handed.")
+    elif weapon_degradation == 0:
+        return("You possess a brand-new level " + str(weapon) + " weapon.")
+    else:
+        return("You have a used level " + str(weapon) + " weapon that can fight an enemy up to level " + str(weapon_degradation) + ".")
 
 def interact_object(chosen_card):
     pass
