@@ -94,7 +94,7 @@ def interact_object(chosen_card):
         else:
             print("Would you like to use your level " + str(weapon) + " weapon on the enemy?")
             response = input()
-            if response in ['yes', 'y']:
+            if str.lower(response) in ['yes', 'y']:
                 #battle enemy
                 if weapon >= monster_level:
                     print("You slice the monster down with ease!")
@@ -114,8 +114,8 @@ def interact_object(chosen_card):
             else:
                 print("In that case, would you like to battle this level " + str(monster_level) + " monster unarmed?")
                 response = input()
-                if response in ['yes,' 'y']:
-                    print ("Spirits blazing, you challenge the foe to a fierce fist-to-fist faceoff!  You take " + monster_level + " damage.")
+                if str.lower(response) in ['yes', 'y']:
+                    print ("Spirits blazing, you challenge the foe to a fierce fist-to-fist faceoff!  You take " + str(monster_level) + " damage.")
                     health -= monster_level
                     return True
                 else:
