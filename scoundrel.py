@@ -67,7 +67,7 @@ def interact_object(chosen_card):
             return True
     elif chosen_card < 27: # if diamond, gain weapon
         if weapon > 0:
-            print("You discard your level " + str(weapon) + " weapon and equip the " + str(chosen_card - 13) + "of Diamonds.")
+            print("You discard your level " + str(weapon) + " weapon and equip the " + str(chosen_card - 13) + " of Diamonds.")
         else:
             print("You arm yourself with a " + str(chosen_card - 13) + " of Diamonds and ready yourself to fight!")
         weapon = chosen_card - 13
@@ -113,6 +113,7 @@ def interact_object(chosen_card):
                 return True
             else:
                 print("In that case, would you like to battle this level " + str(monster_level) + " monster unarmed?")
+                response = input()
                 if response in ['yes,' 'y']:
                     print ("Spirits blazing, you challenge the foe to a fierce fist-to-fist faceoff!  You take " + monster_level + " damage.")
                     health -= monster_level
@@ -144,9 +145,50 @@ def next_room():
     has_fled = False
     has_drank_potion = False
 
-def game_over():
-    print("What a shame, you have been brought to " + str(health) + " health and can not continue your quest.")
-    #TODO define score
+def game_over(won_game):
+    score = 0
+    if won_game:
+        print("\nYou have braved the entirety of the dungeon!  You're rich!\n")
+        score = health
+        if len(room) > 0:
+            print("You scoop up the remaining " + str(room[0]) + " of hearts and chug it as sweet victory wine.\n")
+            score += room[0]
+    else:
+        print("\nWhat a shame, you have been brought to " + str(health) + " health and can not continue your quest.\n")
+        if len(dungeon) > 0:
+            for i in dungeon:
+                if i > 26:
+                    monster_level = i % 13
+                    if monster_level < 2:
+                        monster_level += 13
+                    score -= monster_level
+        if len(room) > 0:
+            for i in room:
+                if i > 26:
+                    monster_level = i % 13
+                    if monster_level < 2:
+                        monster_level += 13
+                    score -= monster_level
+    print("Your final score was " + str(score) + ".\n")
+    if score == 30:
+        print("You achieved the perfect score!  You are the Grand Master Scoundrel!!")
+    elif score >= 20:
+        print("You exit the dungeon feeling stronger than you went in.  You have proven yourself a\nMaster Scoundrel!")
+    elif score >= 0:
+        print("You have made it!  You're one of the rare breed who has what it takes!  You are a\nTrue Scoundrel!")
+    elif score == 0:
+        print("Born under a bad sign, you collapse on the finish line.  You are a Cursed Scoundrel.")
+    elif score >= -25:
+        print("The end of the dungeon was in sight!  Though fame eludes you, you prove to have Scoundrel Spirit!")
+    elif score >= -50:
+        print("You battled valiantly and nearly reached sunlight.  You are a Cunning Thief, and almost a Scoundrel.")
+    elif score >= -100:
+        print("The dungeon is long and cold.  You are a Burglar, still building up the infamy of a true Scoundrel.")
+    elif score >= -150:
+        print("Bitter is the path a scoundrel must walk.  Today you are but a Fledgling, but soon you may become a true Scoundrel.")
+    else:
+        print("Sometimes the fates are more cruel than any scoundrel.  Better luck next run.")
+
 
 def rules_and_credits():
     print('''In Scoundrel, your goal is to survive through a deck of cards (the dungeon)
@@ -218,12 +260,13 @@ for i in range(0, 4):
     room.append(dungeon[0]) # get the four starter cards and remove from dungeon
     dungeon.pop(0)
 
-# TODO help/credits/play menu
-
 while True: #room loop
     while True: #individual card loop
         room_description()
-        print("Would you like to engage with an object (1-4) or L)eave the room?")
+        if len(room) == 4:
+            print("Would you like to engage with an object (1-4) or L)eave the room?")
+        else:
+            print("Which card will you take on next? (1-" + str(len(room)) + ")")
         response = input()
         try:
             response = int(response)
@@ -231,6 +274,9 @@ while True: #room loop
             if str.lower(response) == 'l':
                 if (has_fled):
                     print("You cannot flee, you fled the previous room!")
+                    continue
+                elif len(room) < 4:
+                    print("You cannot leave the room until you clear 3 of its cards!")
                     continue
                 else:
                     flee_room()
@@ -248,12 +294,10 @@ while True: #room loop
             else:
                 continue
     if health <= 0:
-        game_over()
+        game_over(False)
         break
     if len(room) < 2 and len(dungeon) > 0:
         next_room() # try to generate a new room
     if len(room) == 0 and len(dungeon) == 0:
-        break #TODO win game
-
-
-
+        game_over(True)
+        break
